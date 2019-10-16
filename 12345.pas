@@ -1,4 +1,6 @@
+﻿
 ﻿var prq,q:integer; //защита от повторений
+
 begin
  prq:=1;
  for var i:=1 to 10 do
