@@ -7,7 +7,7 @@ Type
     sizey: integer;
     path: array of integer;
   end;
-const pwdth=4;  
+const pwdth=3;  
 const kl=15;
 var s:string; 
     mas:array of string; 
@@ -99,8 +99,9 @@ end;
 
 procedure drawrec(x1,y1,kdr:integer);
   begin
+    x1:=x1*kl;
+    y1:=y1*kl;
     GraphABC.SetPenWidth(pwdth);
-    //writeln(forms[kdr].path);
     for var n1:=0 to round(forms[kdr].path.Length/2)-1 do
     begin
       var cur := n1*2;
@@ -108,25 +109,24 @@ procedure drawrec(x1,y1,kdr:integer);
       x1:=x1+forms[kdr].path[cur]*kl;
       y1:=y1-forms[kdr].path[cur+1]*kl;
     end;
-    x:=x1;
-    y:=y1;
+    x:=round(x1/kl);
+    y:=round(y1/kl);
   end;
 
 procedure startform;
   begin
-    x:=kl*3;
+    x:=3;
     for var n2:=0 to length(forms)-1 do
-  begin
-    if forms[n2].sizey>y then y:=forms[n2].sizey;
-  end;
-  y:=y+round(1/2*kl);
+      begin
+        if forms[n2].sizey>y then y:=forms[n2].sizey;
+      end;
+    y:=y+1;
     for var n2:=0 to forms.Length-1 do
     begin
-      drawrec(x,y,n2);
+      drawrec(x,y-forms[n2].sizey,n2);
       font.size:=13; //почему-то это не работает
       p.TextOut(x,y,forms[n2].Name);//то есть это
-      y:=y-kl*forms[n2].sizey;
-      x:=x+kl;
+      x:=x+1;
     end;
   end;
  
@@ -135,5 +135,6 @@ begin
   field;
   p.Draw(0,0);    
   p.Save('1.png'); 
+  //drawrec(1,4,2);
   startform;
 end.
