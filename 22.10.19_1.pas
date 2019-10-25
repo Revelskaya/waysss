@@ -426,6 +426,6 @@ begin
     p.Draw(0,0);    
     p.Save(namefilestr+'.png'); 
     namefileint := strtoint(namefilestr)+1;
-    namefilestr:=inttostr(namefileint);
+    namefilestr:=inttostr(namefileint); //////пятый файл почему-то ломается 
   end;
 end.
