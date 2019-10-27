@@ -208,7 +208,7 @@ begin
   
 end;
 
-procedure check;
+procedure check; //это процедура, предохраняющая от повторов 
 begin
   repeat
     q:=random(1,rfrm);
