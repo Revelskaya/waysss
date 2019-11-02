@@ -73,7 +73,7 @@ begin
           forms[k].sizey:=forms[k].sizey+forms[k].path[n1]
         end;
       end;
-  if forms[k].sizey<0 then forms[k].sizey:=forms[k].sizey*(-1);
+  //if forms[k].sizey<0 then forms[k].sizey:=forms[k].sizey*(-1);
   if forms[k].sizex<0 then forms[k].sizex:=forms[k].sizex*(-1);
  forms[k].Name:=chr(65+k);
  //writeln(forms[k].path, ' ', forms[k].Name, ' ', forms[k].sizey, ' ', forms[k].sizex); 
@@ -97,17 +97,24 @@ begin
  // writeln(xfield);
   for var n1:=0 to length(forms)-1 do
   begin
-    if forms[n1].sizey>yfield then yfield:=forms[n1].sizey;
+    if forms[n1].sizey<0 then
+    begin
+      if forms[n1].sizey*(-1)>yfield then yfield:=forms[n1].sizey*(-1);
+    end
+    else
+    begin
+      if forms[n1].sizey>yfield then yfield:=forms[n1].sizey;
+    end;
   end;
   yfield:=yfield*11+1;
- // writeln(yfield);
+  //writeln(yfield);
   for var z:=1 to xfield do
   begin
-    p.line(z*kl,0,z*kl,yfield*kl);
+    {p.}line(z*kl,0,z*kl,yfield*kl);
   end;
   for var v:=1 to yfield do
   begin
-    p.line(0, v*kl, xfield*kl,v*kl);
+    {p.}line(0, v*kl, xfield*kl,v*kl);
   end;
   setPenColor(clblack);
 end;
@@ -125,7 +132,7 @@ begin
   begin
     readln(trw, str);
     font.Size:= 10; 
-    p.TextOut(xfield*kl,place,str); 
+    {p.}TextOut(xfield*kl,place,str); 
     place:=place+20;
   end;
   close(trw);
@@ -140,7 +147,7 @@ procedure drawrec(x1,y1,kdr:integer);
     for var n1:=0 to round(forms[kdr].path.Length/2)-1 do
     begin
       var cur := n1*2;
-      GraphABC.Line(x1,y1,x1+forms[kdr].path[cur]*kl,y1-forms[kdr].path[cur+1]*kl);
+      {p.}Line(x1,y1,x1+forms[kdr].path[cur]*kl,y1-forms[kdr].path[cur+1]*kl);
       x1:=x1+forms[kdr].path[cur]*kl;
       y1:=y1-forms[kdr].path[cur+1]*kl;
     end;
@@ -149,28 +156,47 @@ procedure drawrec(x1,y1,kdr:integer);
   end;
 
 procedure startform;
+var yy:integer;
   begin
     x:=3;
     for var n2:=0 to length(forms)-1 do
       begin
-        if forms[n2].sizey>y then y:=forms[n2].sizey;
+        if forms[n2].sizey<0 then 
+          begin
+          if forms[n2].sizey*(-1)>y then y:=forms[n2].sizey*(-1);
+          end
+        else
+          begin
+          if forms[n2].sizey>y then y:=forms[n2].sizey;
+          end;
       end;
     y:=y+1;
+    yy:=y;
     for var n2:=0 to forms.Length-1 do
     begin
-      drawrec(x,y-forms[n2].sizey,n2);
-      font.size:=13; //почему-то это не работает
-      p.TextOut(x,y,forms[n2].Name);//то есть это
+      font.size:=13; 
+      TextOut(x*kl,y*kl,forms[n2].Name);
+      if forms[n2].sizey>0 then 
+      begin
+        drawrec(x,y,n2);
+      end
+      else
+      begin
+        drawrec(x,y+forms[n2].sizey,n2);
+      end;
+      y:=yy;
       x:=x+1;
     end;
   end;
+
+
   
 //выбор шаблонов, которые мы будем использовать 
 procedure testform;
 var l,n:integer;
 begin
   setlength(frm,rfrm);
-  l:=random(0,length(forms)-1);
+  l:=random(length(forms)-1);//// в этой строке переполнение стека
   if forms[l].choice=true then testform
   else forms[l].choice:=true;
   n:=n+1;
@@ -208,7 +234,7 @@ begin
     writeln(keyt, '');
   end;
   write(keyt,ak,'. ');
-  p.TextOut(kl,kl,inttostr(ak));
+  {p.}TextOut(kl,2*kl,inttostr(ak));
   ak:=ak+1;
 end;
 
@@ -337,14 +363,15 @@ begin
   namefilestr:='1';
   for var taskk:=1 to task do
   begin
-    p.Clear;
+    {p.}window.Clear;
     field;
     pen.width:=3;
-    startform;;
+    startform;
+    rules;
     a1:=kl;
     b1:=yfield div 2;
     way(a1,b1);
-    rules;
+    
     p.Draw(0,0);    
     p.Save(namefilestr+'.png'); 
     namefileint := strtoint(namefilestr)+1;

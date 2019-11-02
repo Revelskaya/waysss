@@ -114,6 +114,7 @@ procedure drawrec(x1,y1,kdr:integer);
   end;
 
 procedure startform;
+var yy:integer;
   begin
     x:=3;
     for var n2:=0 to length(forms)-1 do
@@ -121,11 +122,13 @@ procedure startform;
         if forms[n2].sizey>y then y:=forms[n2].sizey;
       end;
     y:=y+1;
+    yy:=y;
     for var n2:=0 to forms.Length-1 do
     begin
-      drawrec(x,y-forms[n2].sizey,n2);
       font.size:=13; //почему-то это не работает
-      p.TextOut(x,y,forms[n2].Name);//то есть это
+      TextOut(x*kl,y*kl,forms[n2].Name);//то есть это
+      drawrec(x,y-forms[n2].sizey,n2);
+      y:=yy;
       x:=x+1;
     end;
   end;
