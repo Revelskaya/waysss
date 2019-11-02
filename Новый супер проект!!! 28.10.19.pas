@@ -13,8 +13,6 @@ Type
 const pwdth=3;  
 
 var ans:string;//ответ на первый вопрос
-    namefileint:integer;//для нумерации задач
-    namefilestr:string;//для нумерации задач
     a1,b1:integer;
 var s:string; 
     mas:array of string; 
@@ -110,11 +108,11 @@ begin
   //writeln(yfield);
   for var z:=1 to xfield do
   begin
-    {p.}line(z*kl,0,z*kl,yfield*kl);
+    p.line(z*kl,0,z*kl,yfield*kl);
   end;
   for var v:=1 to yfield do
   begin
-    {p.}line(0, v*kl, xfield*kl,v*kl);
+    p.line(0, v*kl, xfield*kl,v*kl);
   end;
   setPenColor(clblack);
 end;
@@ -132,7 +130,7 @@ begin
   begin
     readln(trw, str);
     font.Size:= 10; 
-    {p.}TextOut(xfield*kl,place,str); 
+    p.TextOut(xfield*kl,place,str); 
     place:=place+20;
   end;
   close(trw);
@@ -147,7 +145,7 @@ procedure drawrec(x1,y1,kdr:integer);
     for var n1:=0 to round(forms[kdr].path.Length/2)-1 do
     begin
       var cur := n1*2;
-      {p.}Line(x1,y1,x1+forms[kdr].path[cur]*kl,y1-forms[kdr].path[cur+1]*kl);
+      p.Line(x1,y1,x1+forms[kdr].path[cur]*kl,y1-forms[kdr].path[cur+1]*kl);
       x1:=x1+forms[kdr].path[cur]*kl;
       y1:=y1-forms[kdr].path[cur+1]*kl;
     end;
@@ -158,6 +156,7 @@ procedure drawrec(x1,y1,kdr:integer);
 procedure startform;
 var yy:integer;
   begin
+    y:=0;
     x:=3;
     for var n2:=0 to length(forms)-1 do
       begin
@@ -175,7 +174,7 @@ var yy:integer;
     for var n2:=0 to forms.Length-1 do
     begin
       font.size:=13; 
-      TextOut(x*kl,y*kl,forms[n2].Name);
+      p.TextOut(x*kl,y*kl,forms[n2].Name);
       if forms[n2].sizey>0 then 
       begin
         drawrec(x,y,n2);
@@ -213,7 +212,7 @@ begin
       if forms[n2].choice=true then 
       begin
         frm[n1]:=n2;
-        forms[n2].choice:=true;
+        forms[n2].choice:=false;
         break;
       end;
     end;
@@ -234,11 +233,11 @@ begin
     writeln(keyt, '');
   end;
   write(keyt,ak,'. ');
-  {p.}TextOut(kl,2*kl,inttostr(ak));
+  p.TextOut(kl,2*kl,inttostr(ak));
   ak:=ak+1;
 end;
 
-procedure check;
+procedure check;//вечная проблема
 begin
   repeat
     q:=random(0,rfrm-1);
@@ -256,19 +255,14 @@ begin
   key;
   for var z:=1 to rwayl do 
   begin
-    //q:=random(1,rfrm);//вот тут есть проблема:рандом совсем не рандомный
     check;
-    //=!КРОК вывожу значения для проверки
-    //p.TextOut(10+20*z,300,IntToStr(q));
-    //for var krk := 1 to random(1,500) do writeln(); //магия!
-    //=!
     for var r2:=0 to rfrm-1 do
     begin
       if q=r2 then 
       begin
         drawrec(x,y,frm[q]);
         write(keyt,forms[frm[q]].name);
-      break;
+        break;
       end;
     end;
     end;
@@ -278,8 +272,8 @@ end;
 
 procedure way(x1,y1:integer);
 begin
-  testform;
-  findf;
+  //testform;
+  //findf;
   drawf(x1,y1);
 end;
 
@@ -350,6 +344,12 @@ begin
   //startform;
   //rules;
   
+  setlength(frm,3);
+  frm[0]:=1;
+  frm[1]:=2;
+  frm[2]:=3;
+  
+  
   recin;
   
   randomize; 
@@ -360,21 +360,19 @@ begin
   assign(keyt,'keys.txt');
   rewrite(keyt);
   close(keyt);
-  namefilestr:='1';
   for var taskk:=1 to task do
   begin
-    {p.}window.Clear;
+    p.Clear;
     field;
     pen.width:=3;
     startform;
     rules;
-    a1:=kl;
-    b1:=yfield div 2;
+    a1:=1;
+    b1:=yfield div 3;
     way(a1,b1);
-    
-    p.Draw(0,0);    
-    p.Save(namefilestr+'.png'); 
-    namefileint := strtoint(namefilestr)+1;
-    namefilestr:=inttostr(namefileint);  ////////пятый файл почему-то ломается 
+    p.Draw(0,0); 
+    p.Save(inttostr(ak-1)+'.png');
   end;
 end.
+
+//проблема в testform и findf
