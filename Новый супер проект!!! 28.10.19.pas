@@ -12,6 +12,7 @@ Type
   
 const pwdth=3;  
 
+var n:integer;//счетчик в testform
 var ans:string;//ответ на первый вопрос
     a1,b1:integer;
 var s:string; 
@@ -19,7 +20,7 @@ var s:string;
     forms:array of form; 
     m,i,k:integer; 
     wayt:text;
-    x,y:integer;
+    x,y:integer; //координаты
     xfield,yfield:integer;
     frm:array of integer;//массив с используемыми нами шаблонами
     rfrm:integer;//количество используемых нами шаблонов
@@ -30,7 +31,7 @@ var s:string;
     par:text; 
     task:integer;//количество задач, генерируемых по введённым данным
     kl:integer;//масштаб
-var p: Picture := new Picture(GraphABC.Window.Width, GraphABC.Window.Height);
+var p: Picture := new Picture(1280, 1024);
 
 procedure recin;
 begin
@@ -49,7 +50,6 @@ begin
  begin
   readln(wayt,s);
   mas:=s.Split('(',';',')');
- // writeln(mas);
   setlength(forms[k].path,round((length(mas)-1)/3*2));
   m:=0;
   for var n:=0 to length(mas)-1 do
@@ -71,10 +71,8 @@ begin
           forms[k].sizey:=forms[k].sizey+forms[k].path[n1]
         end;
       end;
-  //if forms[k].sizey<0 then forms[k].sizey:=forms[k].sizey*(-1);
   if forms[k].sizex<0 then forms[k].sizex:=forms[k].sizex*(-1);
  forms[k].Name:=chr(65+k);
- //writeln(forms[k].path, ' ', forms[k].Name, ' ', forms[k].sizey, ' ', forms[k].sizex); 
  k := k+1;
  end;
  close(wayt);
@@ -92,7 +90,6 @@ begin
     xfield:=xfield+forms[n1].sizex+1;
   end;
   xfield:=xfield+3;
- // writeln(xfield);
   for var n1:=0 to length(forms)-1 do
   begin
     if forms[n1].sizey<0 then
@@ -105,7 +102,6 @@ begin
     end;
   end;
   yfield:=yfield*11+1;
-  //writeln(yfield);
   for var z:=1 to xfield do
   begin
     p.line(z*kl,0,z*kl,yfield*kl);
@@ -192,10 +188,10 @@ var yy:integer;
   
 //выбор шаблонов, которые мы будем использовать 
 procedure testform;
-var l,n:integer;
+var l:integer;
 begin
   setlength(frm,rfrm);
-  l:=random(length(forms)-1);//// в этой строке переполнение стека
+  l:=random(length(forms));//// в этой строке переполнение стека
   if forms[l].choice=true then testform
   else forms[l].choice:=true;
   n:=n+1;
@@ -272,8 +268,8 @@ end;
 
 procedure way(x1,y1:integer);
 begin
-  //testform;
-  //findf;
+  testform;
+  findf;
   drawf(x1,y1);
 end;
 
@@ -336,22 +332,7 @@ begin
   close(par2);
 end;
 begin
-  //recin;
-  //field;
-  //p.Draw(0,0);    
-  //p.Save('1.png'); 
-  //drawrec(1,4,2);
-  //startform;
-  //rules;
-  
-  setlength(frm,3);
-  frm[0]:=1;
-  frm[1]:=2;
-  frm[2]:=3;
-  
-  
   recin;
-  
   randomize; 
   writeln('Хотите ли вы использовать параметры из файла?');
   readln(ans);
@@ -374,5 +355,3 @@ begin
     p.Save(inttostr(ak-1)+'.png');
   end;
 end.
-
-//проблема в testform и findf
