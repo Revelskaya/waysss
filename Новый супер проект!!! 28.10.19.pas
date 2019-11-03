@@ -332,6 +332,7 @@ begin
   close(par2);
 end;
 begin
+  window.Height:=1024;
   recin;
   randomize; 
   writeln('Хотите ли вы использовать параметры из файла?');
