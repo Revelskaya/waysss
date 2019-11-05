@@ -32,6 +32,7 @@ var s:string;
     task:integer;//количество задач, генерируемых по введённым данным
     kl:integer;//масштаб
 var p: Picture := new Picture(1280, 1024);
+var yfy:array of integer;
 
 procedure recin;
 begin
@@ -44,6 +45,7 @@ begin
  end;
  close(wayt);
  setlength(forms,i);
+ setlength(yfy,i);
  assign(wayt,'waytext.txt');
  reset(wayt);
  while EOF(wayt)=false do
@@ -68,9 +70,15 @@ begin
         end
         else
         begin
-          forms[k].sizey:=forms[k].sizey+forms[k].path[n1]
+          if forms[k].path[n1]<0 then yfy[k]:=yfy[k]+forms[k].path[n1]
+          else forms[k].sizey:=forms[k].sizey+forms[k].path[n1];
         end;
       end;
+  if yfy[k]*(-1)<forms[k].sizey then yfy[k]:=forms[k].sizey
+  else begin
+    forms[k].sizey:=yfy[k]+forms[k].sizey;
+    yfy[k]:=yfy[k]*(-1);
+    end;
   if forms[k].sizex<0 then forms[k].sizex:=forms[k].sizex*(-1);
  forms[k].Name:=chr(65+k);
  k := k+1;
@@ -155,16 +163,9 @@ var yy:integer;
   begin
     y:=0;
     x:=3;
-    for var n2:=0 to length(forms)-1 do
+    for var n2:=0 to length(yfy)-1 do
       begin
-        if forms[n2].sizey<0 then 
-          begin
-          if forms[n2].sizey*(-1)>y then y:=forms[n2].sizey*(-1);
-          end
-        else
-          begin
-          if forms[n2].sizey>y then y:=forms[n2].sizey;
-          end;
+        if yfy[n2]>y then y:=yfy[n2];
       end;
     y:=y+1;
     yy:=y;

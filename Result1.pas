@@ -303,7 +303,7 @@ var trw:text;
     place:integer;
 begin
   place:=kl;
-  assign(trw,'file.txt');
+  assign(trw,'rules.txt');
   reset(trw);
   while EOF(trw)=false do
   begin
